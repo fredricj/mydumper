@@ -455,6 +455,7 @@ void read_tables_skiplist(const gchar *filename) {
   /* Error opening/reading the file? bail out. */
   if (!tables_skiplist_channel) {
     g_critical("cannot read/open file %s, %s\n", filename, error->message);
+    g_error_free(error);
     errors++;
     return;
   };
@@ -468,6 +469,7 @@ void read_tables_skiplist(const gchar *filename) {
     };
   } while (buf);
   g_io_channel_shutdown(tables_skiplist_channel, FALSE, NULL);
+  g_io_channel_unref(tables_skiplist_channel);
   /* Sort the list, so that lookups work */
   g_sequence_sort(tables_skiplist, tables_skiplist_cmp, NULL);
   g_message("Omit list file contains %d tables to skip\n",
