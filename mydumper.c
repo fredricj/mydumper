@@ -415,9 +415,13 @@ gboolean check_regex(char *database, char *table) {
 /* Check database.table string against skip list; returns TRUE if found */
 
 gboolean check_skiplist(char *database, char *table) {
-  if (g_sequence_lookup(tables_skiplist,
-                        g_strdup_printf("%s.%s", database, table),
-                        tables_skiplist_cmp, NULL)) {
+  gchar *p = g_strdup_printf("%s.%s", database, table);
+  GSequenceIter *iter = g_sequence_lookup(tables_skiplist,
+                        p,
+                        tables_skiplist_cmp, NULL);
+  g_free(p);
+  if (iter) {
+    g_free(iter);
     return TRUE;
   } else {
     return FALSE;
